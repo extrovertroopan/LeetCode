@@ -1,0 +1,19 @@
+class Solution:
+    def minAddToMakeValid(self, s: str) -> int:
+        open_needed = 0   # Count of missing '('
+        close_needed = 0  # Count of missing ')'
+
+        for char in s:
+            if char == '(':
+                # We encountered '(', so we will need a matching ')'
+                close_needed += 1
+            elif char == ')':
+                if close_needed > 0:
+                    # Match this ')' with a previous '('
+                    close_needed -= 1
+                else:
+                    # Unmatched ')', we need an extra '(' before it
+                    open_needed += 1
+
+        # Total insertions needed = missing '(' + missing ')'
+        return open_needed + close_needed
