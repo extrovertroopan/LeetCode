@@ -1,0 +1,38 @@
+class Solution:
+    def myAtoi(self, s: str) -> int:
+        if not s:
+            return 0
+        
+        i = 0
+        n = len(s)
+        
+        # Step 1: Discard whitespace
+        while i < n and s[i] == ' ':
+            i += 1
+            
+        if i == n:
+            return 0
+            
+        # Step 2: Check sign
+        sign = 1
+        if s[i] == '-':
+            sign = -1
+            i += 1
+        elif s[i] == '+':
+            i += 1
+            
+        # Step 3: Convert digits and handle overflow
+        result = 0
+        INT_MIN, INT_MAX = -2**31, 2**31 - 1
+        
+        while i < n and s[i].isdigit():
+            digit = int(s[i])
+            
+            # Step 4: Check for overflow and underflow before multiplying/adding
+            if result > (INT_MAX - digit) // 10:
+                return INT_MAX if sign == 1 else INT_MIN
+                
+            result = result * 10 + digit
+            i += 1
+            
+        return sign * result
