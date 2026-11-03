@@ -1,0 +1,38 @@
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        max_length = 0
+        
+        # Pass 1: Scan from left to right
+        open_count = 0
+        close_count = 0
+        for char in s:
+            if char == '(':
+                open_count += 1
+            else:
+                close_count += 1
+                
+            # If they match, we have a perfectly balanced substring
+            if open_count == close_count:
+                max_length = max(max_length, 2 * close_count)
+            # If close exceeds open, this segment is invalid; reset balances
+            elif close_count > open_count:
+                open_count = 0
+                close_count = 0
+                
+        # Pass 2: Scan from right to left
+        # This handles cases like "(()" where open count stays greater than close count
+        open_count = 0
+        close_count = 0
+        for char in reversed(s):
+            if char == '(':
+                open_count += 1
+            else:
+                close_count += 1
+                
+            if open_count == close_count:
+                max_length = max(max_length, 2 * open_count)
+            elif open_count > close_count:
+                open_count = 0
+                close_count = 0
+                
+        return max_length
