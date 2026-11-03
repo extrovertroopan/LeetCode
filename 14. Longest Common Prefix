@@ -1,0 +1,18 @@
+from typing import List
+
+class Solution:
+    def longestCommonPrefix(self, strs: List[int]) -> str:
+        # Sort the array lexicographically
+        strs.sort()
+        
+        # Get the first and last strings
+        first = strs[0]
+        last = strs[-1]
+        
+        # Find the common prefix between first and last
+        min_len = min(len(first), len(last))
+        i = 0
+        while i < min_len and first[i] == last[i]:
+            i += 1
+            
+        return first[:i]
