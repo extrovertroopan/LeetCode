@@ -1,0 +1,32 @@
+import math
+
+class Solution:
+    def getPermutation(self, n: int, k: int) -> str:
+        # Create a list of available numbers: [1, 2, 3, ..., n]
+        numbers = [str(i) for i in range(1, n + 1)]
+        
+        # Precompute factorials up to (n-1)!
+        factorials = [1] * n
+        for i in range(1, n):
+            factorials[i] = factorials[i - 1] * i
+            
+        # Convert k to 0-indexed alignment
+        k -= 1
+        
+        res = []
+        
+        # Determine each digit from left to right
+        for i in range(n - 1, -1, -1):
+            # Calculate the block index for the current position
+            idx = k // factorials[i]
+            
+            # Append the chosen digit to our result
+            res.append(numbers[idx])
+            
+            # Remove the used number from the pool
+            numbers.pop(idx)
+            
+            # Update k to find the position within the next sub-block
+            k %= factorials[i]
+            
+        return "".join(res)
