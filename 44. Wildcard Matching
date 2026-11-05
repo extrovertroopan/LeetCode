@@ -1,0 +1,31 @@
+class Solution:
+    def isMatch(self, s: str, p: str) -> bool:
+        s_len, p_len = len(s), len(p)
+        s_idx = p_idx = 0
+        star_idx = -1
+        match_idx = 0
+        
+        while s_idx < s_len:
+            # Case 1: Direct match or '?' matching a single character
+            if p_idx < p_len and (p[p_idx] == '?' or p[p_idx] == s[s_idx]):
+                s_idx += 1
+                p_idx += 1
+            # Case 2: '*' encountered, record the star position and current string match index
+            elif p_idx < p_len and p[p_idx] == '*':
+                star_idx = p_idx
+                match_idx = s_idx
+                p_idx += 1
+            # Case 3: Mismatch happened, but we have seen a previous '*', backtrack
+            elif star_idx != -1:
+                p_idx = star_idx + 1
+                match_idx += 1
+                s_idx = match_idx
+            # Case 4: Mismatch and no '*' to fallback on
+            else:
+                return False
+                
+        # Check remaining characters in pattern are all '*'
+        while p_idx < p_len and p[p_idx] == '*':
+            p_idx += 1
+            
+        return p_idx == p_len
