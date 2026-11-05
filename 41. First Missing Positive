@@ -1,0 +1,32 @@
+from typing import List
+
+class Solution:
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        total_slots = len(nums)
+        
+        # Step 1: Put each number onto its "rightful shelf slot"
+        for current_index in range(total_slots):
+            
+            # Keep swapping numbers until the item at current_index is either:
+            # 1. Out of our target range (negative, zero, or larger than the array size)
+            # 2. Already sitting in its correct slot
+            while 1 <= nums[current_index] <= total_slots:
+                correct_slot = nums[current_index] - 1
+                
+                # If the correct slot already has this exact number, stop swapping 
+                # to prevent getting stuck in an infinite loop
+                if nums[current_index] == nums[correct_slot]:
+                    break
+                    
+                # Swap the number into its correct position
+                nums[current_index], nums[correct_slot] = nums[correct_slot], nums[current_index]
+        
+        # Step 2: Walk through the organized array to find the first broken slot
+        for index in range(total_slots):
+            expected_number = index + 1
+            if nums[index] != expected_number:
+                return expected_number
+                
+        # If the array perfectly holds [1, 2, ..., total_slots], 
+        # then the smallest missing positive integer is the very next number.
+        return total_slots + 1
