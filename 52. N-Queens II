@@ -1,0 +1,32 @@
+class Solution:
+    def totalNQueens(self, n: int) -> int:
+        self.count = 0
+        
+        # bitmasks for tracking columns, positive diagonals, and negative diagonals
+        def backtrack(row, cols, pos_diags, neg_diags):
+            if row == n:
+                self.count += 1
+                return
+            
+            # Bitwise OR combines all attacking positions for the current row
+            # ~ negates it to look for open spaces (0s become 1s)
+            # ((1 << n) - 1) limits the bits to the board width n
+            available_positions = ~ (cols | pos_diags | neg_diags) & ((1 << n) - 1)
+            
+            while available_positions:
+                # Get the lowest set bit (the first available column position)
+                position = available_positions & -available_positions
+                
+                # Clear this position from the available pool
+                available_positions -= position
+                
+                # Recurse to the next row, shifting diagonals appropriately
+                backtrack(
+                    row + 1, 
+                    cols | position, 
+                    (pos_diags | position) << 1, 
+                    (neg_diags | position) >> 1
+                )
+                
+        backtrack(0, 0, 0, 0)
+        return self.count
