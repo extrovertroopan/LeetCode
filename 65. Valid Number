@@ -1,0 +1,35 @@
+class Solution:
+    def isNumber(self, s: str) -> bool:
+        seen_digit = False
+        seen_dot = False
+        seen_e = False
+        
+        for i, char in enumerate(s):
+            if char.isdigit():
+                seen_digit = True
+                
+            elif char in ('+', '-'):
+                # A sign can only appear at the very beginning 
+                # or immediately after an exponent ('e' or 'E')
+                if i > 0 and s[i - 1] not in ('e', 'E'):
+                    return False
+                    
+            elif char in ('e', 'E'):
+                # An exponent can only appear once and must follow a digit
+                if seen_e or not seen_digit:
+                    return False
+                seen_e = True
+                seen_digit = False  # Reset to ensure at least one digit follows the exponent
+                
+            elif char == '.':
+                # A dot can only appear once and cannot appear after an exponent
+                if seen_dot or seen_e:
+                    return False
+                seen_dot = True
+                
+            else:
+                # Any other character is strictly invalid
+                return False
+                
+        # The string is valid only if it ends with a valid sequence of digits
+        return seen_digit
