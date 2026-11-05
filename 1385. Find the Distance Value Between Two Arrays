@@ -1,0 +1,22 @@
+import bisect
+
+
+class Solution:
+
+    def findTheDistanceValue(
+        self, arr1: list[int], arr2: list[int], d: int
+    ) -> int:
+        arr2.sort()
+        distance_count = 0
+
+        for x in arr1:
+            # Find the index of the first element >= (x - d)
+            idx = bisect.bisect_left(arr2, x - d)
+
+            # If idx is within bounds and arr2[idx] <= x + d, a valid y exists
+            if idx < len(arr2) and arr2[idx] <= x + d:
+                continue
+
+            distance_count += 1
+
+        return distance_count
