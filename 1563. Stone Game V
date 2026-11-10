@@ -1,0 +1,67 @@
+from typing import List
+
+class Solution:
+    def stoneGameV(self, stoneValue: List[int]) -> int:
+        n = len(stoneValue)
+        if n == 1:
+            return 0
+            
+        # dp[i][j] stores the max score for subarray stoneValue[i...j]
+        dp = [[0] * n for _ in range(n)]
+        
+        # max_left[i][j] stores max_{k=i..j} (dp[i][k] + sum(i...k))
+        max_left = [[0] * n for _ in range(n)]
+        # max_right[i][j] stores max_{k=i..j} (dp[k][j] + sum(k...j))
+        max_right = [[0] * n for _ in range(n)]
+        
+        # Initialize prefix sum array
+        prefix = [0] * (n + 1)
+        for i in range(n):
+            prefix[i + 1] = prefix[i] + stoneValue[i]
+            
+        def get_sum(i: int, j: int) -> int:
+            return prefix[j + 1] - prefix[i]
+
+        # Initialize base cases for single stones
+        for i in range(n):
+            max_left[i][i] = stoneValue[i]
+            max_right[i][i] = stoneValue[i]
+            
+        # Track the splitting point 'mid' independently for each row 'i'
+        mid = [i for i in range(n)]
+        
+        # Bottom-up DP: processing short intervals first
+        for i in range(n - 1, -1, -1):
+            for j in range(i + 1, n):
+                # Safely advance mid[i] while the left row sum < right row sum
+                while mid[i] < j and get_sum(i, mid[i]) < get_sum(mid[i] + 1, j):
+                    mid[i] += 1
+                
+                m = mid[i]
+                
+                # Case 1: Splits from i to m-1 where left_sum < right_sum
+                if i <= m - 1:
+                    dp[i][j] = max(dp[i][j], max_left[i][m - 1])
+                
+                # Case 2: Splits from m+1 to j-1 where left_sum > right_sum
+                if m + 1 < j:
+                    dp[i][j] = max(dp[i][j], max_right[m + 2][j])
+                    
+                # Case 3: Partition exactly at the boundary 'm'
+                left_sum = get_sum(i, m)
+                right_sum = get_sum(m + 1, j)
+                
+                if left_sum == right_sum:
+                    dp[i][j] = max(dp[i][j], max_left[i][m])
+                    if m + 1 <= j:
+                        dp[i][j] = max(dp[i][j], max_right[m + 1][j])
+                else:
+                    if m + 1 <= j:
+                        dp[i][j] = max(dp[i][j], right_sum + dp[m + 1][j])
+                
+                # Maintain the cumulative maximums for downstream intervals
+                total_sum = get_sum(i, j)
+                max_left[i][j] = max(max_left[i][j - 1], dp[i][j] + total_sum)
+                max_right[i][j] = max(max_right[i + 1][j], dp[i][j] + total_sum)
+                
+        return dp[0][n - 1]
