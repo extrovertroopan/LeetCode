@@ -1,0 +1,17 @@
+class Solution:
+    def climbStairs(self, n: int, costs: list[int]) -> int:
+        # dp[j] stores the minimum cost to reach step j
+        dp = [0] * (n + 1)
+        
+        for j in range(1, n + 1):
+            min_prev = float('inf')
+            
+            # Check jump from j - 1, j - 2, j - 3
+            for k in range(1, 4):
+                if j - k >= 0:
+                    min_prev = min(min_prev, dp[j - k] + k * k)
+            
+            # Add the current step's cost
+            dp[j] = costs[j - 1] + min_prev
+            
+        return dp[n]
