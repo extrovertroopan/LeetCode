@@ -1,0 +1,36 @@
+class Solution:
+    def diffWaysToCompute(self, expression: str) -> list[int]:
+        # Memoization dictionary to store results of subexpressions
+        memo = {}
+        
+        def helper(expr: str) -> list[int]:
+            if expr in memo:
+                return memo[expr]
+            
+            results = []
+            
+            # Iterate through the expression
+            for i, char in enumerate(expr):
+                if char in "+-*":
+                    # Divide the expression into left and right sub-expressions
+                    left_results = helper(expr[:i])
+                    right_results = helper(expr[i+1:])
+                    
+                    # Combine all possible results from left and right
+                    for left in left_results:
+                        for right in right_results:
+                            if char == '+':
+                                results.append(left + right)
+                            elif char == '-':
+                                results.append(left - right)
+                            elif char == '*':
+                                results.append(left * right)
+                                
+            # Base case: if the expression contains no operators, it's just a number
+            if not results:
+                results.append(int(expr))
+                
+            memo[expr] = results
+            return results
+
+        return helper(expression)
