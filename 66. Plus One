@@ -1,0 +1,14 @@
+class Solution:
+    def plusOne(self, digits: list[int]) -> list[int]:
+        # Traverse the digits array in reverse order (least significant to most significant)
+        for i in range(len(digits) - 1, -1, -1):
+            if digits[i] < 9:
+                digits[i] += 1
+                return digits
+            
+            # If the digit is 9, it becomes 0 and the carry continues to the left
+            digits[i] = 0
+            
+        # If the loop finishes, it means all digits were 9 (e.g., [9, 9, 9] ->)
+        # We need to insert a 1 at the beginning (e.g., [1, 0, 0, 0])
+        return [1] + digits
