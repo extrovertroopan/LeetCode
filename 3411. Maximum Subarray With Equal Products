@@ -1,0 +1,28 @@
+import math
+from typing import List
+
+
+class Solution:
+
+    def maxLength(self, nums: List[int]) -> int:
+        n = len(nums)
+        max_len = 0
+
+        # Iterate over all possible starting indices of subarrays
+        for i in range(n):
+            curr_prod = 1
+            curr_gcd = 0
+            curr_lcm = 1
+
+            # Expand the subarray from index i to j
+            for j in range(i, n):
+                val = nums[j]
+                curr_prod *= val
+                curr_gcd = val if curr_gcd == 0 else math.gcd(curr_gcd, val)
+                curr_lcm = math.lcm(curr_lcm, val)
+
+                # Check if prod(arr) == lcm(arr) * gcd(arr)
+                if curr_prod == curr_lcm * curr_gcd:
+                    max_len = max(max_len, j - i + 1)
+
+        return max_len
